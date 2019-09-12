@@ -3,7 +3,7 @@
 #include <string.h>
 
 tabelaSimbolos::tabelaSimbolos(){
-    strings = (unsigned char *) malloc(TAM_STRING);
+    strings = (char *) malloc(TAM_STRING);
     for(int i=0;i<TAM_TABELA;i++){
         tabelaHash[i]=NULL;
     }
@@ -24,7 +24,7 @@ tabelaSimbolos::~tabelaSimbolos(){
     free(strings);
 }
 
-int tabelaSimbolos::contemString(int pos, unsigned char * str){
+int tabelaSimbolos::contemString(int pos, char * str){
     int i;
     for(i=0;strings[i+pos]!='\0' && str[i]!='\0';i++){
         if(strings[i+pos]!=str[i]){
@@ -38,17 +38,20 @@ int tabelaSimbolos::contemString(int pos, unsigned char * str){
     }
 }
 
-int tabelaSimbolos::funcaoHash(unsigned char * str){
+int tabelaSimbolos::funcaoHash(char * str){
     unsigned long hash = 5381;
     int c;
     while (c = *str++)
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+        hash = ((hash << 5) + hash) + c;
     return (int)(hash % TAM_TABELA);
 }
 
-int tabelaSimbolos::contem(unsigned char * strConsulta){
+int tabelaSimbolos::contem(char * strConsulta){
     int hash = funcaoHash(strConsulta);
     entrada * atual = tabelaHash[hash];
+    if(atual!=NULL){
+        cout << "colisao" << endl;
+    }
     while(atual!=NULL){
         if(tabelaSimbolos::contemString(atual->pos,strConsulta)){
             return true;
@@ -58,7 +61,7 @@ int tabelaSimbolos::contem(unsigned char * strConsulta){
     return false;
 }
 
-int tabelaSimbolos::insere(unsigned char * strInserir){
+int tabelaSimbolos::insere(char * strInserir){
     if(!contem(strInserir)){
         int hash = funcaoHash(strInserir);
         int i=-1;
@@ -66,11 +69,11 @@ int tabelaSimbolos::insere(unsigned char * strInserir){
         inserir->pos = posString;
         do{
             i++;
-            if(posString < TAM_STRING){
+            if(posString < tamStringAtual){
                 strings[posString]=strInserir[i];
             }else{
                 tamStringAtual=tamStringAtual+TAM_CRESCIMENTO;
-                strings = (unsigned char *) realloc(strings,tamStringAtual);
+                strings = (char *) realloc(strings,tamStringAtual);
                 strings[posString]=strInserir[i];
             }
             posString++;

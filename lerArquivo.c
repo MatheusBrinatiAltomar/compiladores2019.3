@@ -7,15 +7,14 @@
 #define TAMANHO_MAX_NOME_ARQUIVO 100
 
 FILE * arquivo;
-unsigned char * buffer;
+char * buffer;
 int posBuffer;
 
-int construtor (unsigned char nomeArquivo[]){
+int construtor (char nomeArquivo[]){
         corrigeNomeArquivo(nomeArquivo);
         arquivo = fopen(nomeArquivo,"r");
         if(arquivo!=NULL){
-                buffer = (unsigned char *) malloc(TAMANHO_BUFFER+1);
-                buffer[0]='\0';
+                buffer = (char *) malloc(TAMANHO_BUFFER+1);
                 posBuffer=TAMANHO_BUFFER;
                 return 1;
         }
@@ -29,7 +28,7 @@ void destrutor (){
 
 //método interno para corrigir o nome do arquivo caso o usuario passe ele sem extensão
 //recebe como parâmetro o nome do arquivo passado pelo usuário
-void corrigeNomeArquivo(unsigned char nomeArquivo[]){
+void corrigeNomeArquivo(char nomeArquivo[]){
         int contemPonto = 0;
         for(int i=0;nomeArquivo[i]!='\0';i++){
                 if(nomeArquivo[i]=='.'){
@@ -51,7 +50,7 @@ int preencheBuffer(){
         return qtdLido;
 }
 
-unsigned char pegarCaractere(){
+char pegarCaractere(){
         if(buffer[posBuffer]!='\0'){
                 posBuffer++;
                 return buffer[posBuffer-1];
@@ -67,8 +66,8 @@ unsigned char pegarCaractere(){
 
 //main feita para testes... so nao foi apagada pq provavelmente vai ser reaproveitada na main verdadeira
 /*
-int main(int argc, unsigned char *argv[]){
-        unsigned char nomeArquivo[TAMANHO_MAX_NOME_ARQUIVO+3], c;
+int main(int argc, char *argv[]){
+        char nomeArquivo[TAMANHO_MAX_NOME_ARQUIVO+3], c;
         if(argc>1){
                 strcpy(nomeArquivo,argv[1]);
         }else{
