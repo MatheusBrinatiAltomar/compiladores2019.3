@@ -1,55 +1,31 @@
-#ifndef TABELASIMBOLOS_H
-#define TABELASIMBOLOS_H
-#include <iostream>
-#include <stdlib.h>
-#include <vector>
-#include <string.h>
-#include <list>
-#define TAMANHOTABELA 3
+#ifndef  TABELASIMBOLOS_H
+#define  TABELASIMBOLOS_H
+
+#define TAM_TABELA 500
+#define TAM_STRING 1000
+#define TAM_CRESCIMENTO 500
 
 using namespace std;
 
-class info
-{
-    public:
-        void setString(string str){i = str;};
-        string getString(){return i;};
+//estrutura utilizada na hash para que se salve o proximo elemento da lista e a posicao no vetor de unsigned char na qual a string atual esta salva
+typedef struct entrada{
+    int pos;
+    entrada * prox;
+} entrada;
+
+class tabelaSimbolos{
     private:
-        string i;
-};
-
-class entrada
-{
-    private:
-        int chave;
-        info *i;
-        //entrada *proximo;
+        int posString;
+        int tamStringAtual;
+        unsigned char * strings;
+        entrada * tabelaHash[TAM_TABELA];
+        int funcaoHash(unsigned char * str);
+        int contemString(int pos, unsigned char * str);
     public:
-        void construtor(int c, info *d)
-        {
-            chave = c;
-            i = d;
-            //proximo = NULL;
-        };
-        void setChave(int x){chave = x;};
-        int getChave(){return chave;};
-        void setInfo(string str){i->setString(str);};
-        string getInfo(){return i->getString();};
-        info *getI(){return i;};
-        //void setProx(entrada *ent){proximo = ent;};
-};
-
-class tabelaSimbolos
-{
-    public:
-        vector< vector<entrada> > tabelaHash;
-        vector<string> vetorInfo;
-
         tabelaSimbolos();
         virtual ~tabelaSimbolos();
-        int hashFunction(entrada x);
-        void insercao(entrada x);
-        void mostraTabela();
+        int contem(unsigned char * strConsulta);
+        int insere(unsigned char * strInserir);
 };
 
-#endif // TABELASIMBOLOS_H
+#endif /*TABELASIMBOLOS_H*/

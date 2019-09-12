@@ -1,17 +1,20 @@
+#include "lerArquivo.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 #define TAMANHO_BUFFER 512
+#define TAMANHO_MAX_NOME_ARQUIVO 100
 
 FILE * arquivo;
-char * buffer;
+unsigned char * buffer;
 int posBuffer;
 
-int construtor (char nomeArquivo[]){
-        arquivo = fopen(nomeArquivo,"r");//tem q tratar o nome do arquivo
+int construtor (unsigned char nomeArquivo[]){
+        corrigeNomeArquivo(nomeArquivo);
+        arquivo = fopen(nomeArquivo,"r");
         if(arquivo!=NULL){
-                buffer = (char *) malloc(TAMANHO_BUFFER+1);
+                buffer = (unsigned char *) malloc(TAMANHO_BUFFER+1);
                 buffer[0]='\0';
                 posBuffer=TAMANHO_BUFFER;
                 return 1;
@@ -24,6 +27,23 @@ void destrutor (){
         fclose(arquivo);
 }
 
+//método interno para corrigir o nome do arquivo caso o usuario passe ele sem extensão
+//recebe como parâmetro o nome do arquivo passado pelo usuário
+void corrigeNomeArquivo(unsigned char nomeArquivo[]){
+        int contemPonto = 0;
+        for(int i=0;nomeArquivo[i]!='\0';i++){
+                if(nomeArquivo[i]=='.'){
+                        contemPonto = 1;
+                        break;
+                }
+        }
+        if(!contemPonto){
+                strcat(nomeArquivo, ".cmm");
+        }
+}
+
+//metodo interno para encher o buffer toda vez que ele for consumido por inteiro
+//retorna a qtd de byts lidos;
 int preencheBuffer(){
         int qtdLido = fread(buffer,1,TAMANHO_BUFFER,arquivo);
         buffer[qtdLido]='\0';
@@ -31,7 +51,7 @@ int preencheBuffer(){
         return qtdLido;
 }
 
-char pegarCaractere(){
+unsigned char pegarCaractere(){
         if(buffer[posBuffer]!='\0'){
                 posBuffer++;
                 return buffer[posBuffer-1];
@@ -45,20 +65,22 @@ char pegarCaractere(){
         }
 }
 
-void ungetCaractere(){
-        posBuffer--;
-}
-
-int main(){
-        char nome[50];
-        char car;
-        strcpy(nome,"teste.txt");
-        if(construtor(nome)){
-                while((car=pegarCaractere())!='\0'){
-                        printf("%c",car);
+//main feita para testes... so nao foi apagada pq provavelmente vai ser reaproveitada na main verdadeira
+/*
+int main(int argc, unsigned char *argv[]){
+        unsigned char nomeArquivo[TAMANHO_MAX_NOME_ARQUIVO+3], c;
+        if(argc>1){
+                strcpy(nomeArquivo,argv[1]);
+        }else{
+                scanf("%s",nomeArquivo);
+        }
+        if(construtor(nomeArquivo)){
+                while((c=pegarCaractere())!='\0'){
+                        printf("%c",c);
                 }
                 destrutor();
         }else{
                 printf("\nArquivo não encontrado\n");
         }
 }
+*/
